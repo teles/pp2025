@@ -1,91 +1,70 @@
-# React + TypeScript + Vite
+# Passaporte Pinheiros - Site de Experiências
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este projeto é o front-end do **Passaporte Pinheiros**: um site para selecionar, explorar e visualizar as experiências disponíveis nos estabelecimentos participantes.
+
+## O que o site faz
+
+- Lista os lugares participantes em formato de cards.
+- Permite filtrar por tipo de culinária e tipo de benefício.
+- Exibe detalhes da experiência de cada estabelecimento.
+- Mostra galeria de imagens (logo + fotos).
+- Exibe localização no mapa e link para abrir no Google Maps.
+
+## Stack
+
+- React 19 + TypeScript
+- Vite
+- Tailwind CSS
+- Leaflet (mapa)
+- Papa Parse (leitura de CSV)
+
+## Dados e assets
+
+Os dados são lidos de:
+
+- `public/data/data.csv`
+
+As imagens seguem o padrão:
+
+- `public/images/{slug}/logo.jpg`
+- `public/images/{slug}/foto-1.jpg`
+- `public/images/{slug}/foto-2.jpg`
+- `public/images/{slug}/foto-3.jpg`
+- `public/images/{slug}/{slug}.jpg`
+
+Observação: o `slug` usado no CSV deve existir também em `src/lib/constants.ts` para manter o mapeamento de coordenadas.
+
+## Rodando localmente
+
+Pré-requisito:
+
+- Node.js `20.19+` (ou `22.12+`)
+
+Comandos:
+
+```bash
+npm install
+npm run dev
+```
+
+Build de produção:
+
+```bash
+npm run build
+npm run preview
+```
 
 ## Deploy no GitHub Pages
 
-Este projeto está preparado para deploy automático via GitHub Actions.
-
-### Como funciona
+O deploy está configurado por GitHub Actions.
 
 - Workflow: `.github/workflows/deploy.yml`
-- Gatilho: push na branch `main`
-- Artefato publicado: pasta `dist/`
-- `base` do Vite: calculado automaticamente em CI com o nome do repositório (`/<repo>/`)
+- Trigger: push na branch `main`
+- Publicação: pasta `dist`
 
-### Passos no GitHub
+Para ativar no GitHub:
 
-1. Vá em `Settings` > `Pages`.
-2. Em `Build and deployment`, selecione `Source: GitHub Actions`.
-3. Faça push na branch `main`.
+1. Abra `Settings` > `Pages`.
+2. Em `Build and deployment`, selecione `GitHub Actions`.
+3. Faça push na `main`.
 4. Aguarde o workflow `Deploy to GitHub Pages` finalizar.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
