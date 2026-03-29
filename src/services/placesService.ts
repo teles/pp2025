@@ -5,7 +5,6 @@ import { inferTags } from '@/services/tagInference'
 import { withBase } from '@/lib/utils'
 
 interface RawRow {
-  url_imagem: string
   arquivo_original: string
   arquivo_final: string
   nome_estabelecimento: string
