@@ -32,6 +32,7 @@ html.light {
   --color-dark-800: var(--surface);
   --color-dark-700: var(--surface-raised);
   --color-white:    var(--fg);
+  --color-pure-white: #ffffff;
 
   --font-sans: 'Inter', system-ui, sans-serif;
   --radius-card: 1rem;

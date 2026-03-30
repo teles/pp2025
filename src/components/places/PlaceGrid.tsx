@@ -6,9 +6,12 @@ interface PlaceGridProps {
   selectedPlace: Place | null
   onSelect: (place: Place) => void
   distances?: Record<string, number>
+  isFavorite?: (slug: string) => boolean
+  onToggleFavorite?: (slug: string) => void
+  visitCount?: (slug: string) => number
 }
 
-export function PlaceGrid({ places, selectedPlace, onSelect, distances }: PlaceGridProps) {
+export function PlaceGrid({ places, selectedPlace, onSelect, distances, isFavorite, onToggleFavorite, visitCount }: PlaceGridProps) {
   if (places.length === 0) {
     return (
       <div className="col-span-full flex flex-col items-center justify-center py-20 text-center">
@@ -28,6 +31,9 @@ export function PlaceGrid({ places, selectedPlace, onSelect, distances }: PlaceG
           selected={selectedPlace?.slug === place.slug}
           onSelect={onSelect}
           distanceKm={distances?.[place.slug]}
+          isFavorite={isFavorite?.(place.slug)}
+          onToggleFavorite={onToggleFavorite}
+          visitCount={visitCount?.(place.slug)}
         />
       ))}
     </div>

@@ -1,8 +1,7 @@
 import { cn } from '@/lib/utils'
 import type { Tag } from '@/types/place'
 import { CUISINE_TAGS, PROMO_TAGS, TAG_LABELS } from '@/lib/constants'
-import { Select, SelectContent, SelectItem, SelectTrigger } from './Select'
-import { ArrowUpDown } from 'lucide-react'
+import { FilterModal, type FilterModalFilters } from './FilterModal'
 
 type SortMode = 'default' | 'distance'
 type LocationStatus = 'idle' | 'loading' | 'ready' | 'unsupported' | 'denied' | 'error'
@@ -34,42 +33,34 @@ interface FilterBarProps {
   selectedTags: Tag[]
   onToggle: (tag: Tag) => void
   onClear: () => void
-  sortMode: SortMode
+  filters: FilterModalFilters
+  onFiltersChange: (filters: FilterModalFilters) => void
   onSortModeChange: (mode: SortMode) => void
   locationStatus: LocationStatus
-}
-
-// Compact on mobile (icon only), full label+value on sm+
-function SortSelectTrigger({ sortMode }: { sortMode: SortMode }) {
-  const label = sortMode === 'distance' ? 'Próximo a mim' : 'Padrão (nome)'
-  return (
-    <SelectTrigger className="px-2 sm:px-3">
-      <ArrowUpDown className={cn('sm:hidden h-3.5 w-3.5 shrink-0', sortMode === 'distance' ? 'text-brand-400' : 'text-white/50')} />
-      <span className="hidden sm:inline text-xs">
-        <span className="text-white/30 mr-0.5">Ordenar:</span>
-        {label}
-      </span>
-    </SelectTrigger>
-  )
-}
-
-function getSortStatusText(status: LocationStatus): string | null {
-  if (status === 'loading') return 'Buscando sua localizacao...'
-  if (status === 'unsupported') return 'Seu navegador nao suporta geolocalizacao.'
-  if (status === 'denied') return 'Permissao de localizacao negada.'
-  if (status === 'error') return 'Nao foi possivel obter sua localizacao.'
-  return null
+  favoritesCount: number
+  visitedCount: number
+  filterModalOpen: boolean
+  onFilterModalOpenChange: (open: boolean) => void
 }
 
 export function FilterBar({
   selectedTags,
   onToggle,
   onClear,
-  sortMode,
+  filters,
+  onFiltersChange,
   onSortModeChange,
   locationStatus,
+  favoritesCount,
+  visitedCount,
+  filterModalOpen,
+  onFilterModalOpenChange,
 }: FilterBarProps) {
-  const sortStatusText = getSortStatusText(locationStatus)
+  const activeFilterCount =
+    (filters.showFavorites ? 1 : 0) +
+    (filters.showVisited ? 1 : 0) +
+    (filters.showNotVisited ? 1 : 0) +
+    (filters.sortMode === 'distance' ? 1 : 0)
 
   return (
     <div className="border-b border-white/10 bg-dark-800 px-4 py-3 space-y-2.5">
@@ -89,18 +80,19 @@ export function FilterBar({
           ))}
         </div>
         <div className="shrink-0 ml-1">
-          <Select value={sortMode} onValueChange={(v) => onSortModeChange(v as SortMode)}>
-            <SortSelectTrigger sortMode={sortMode} />
-            <SelectContent align="end">
-              <SelectItem value="default">Padrão (nome)</SelectItem>
-              <SelectItem value="distance">Próximo a mim</SelectItem>
-            </SelectContent>
-          </Select>
+          <FilterModal
+            open={filterModalOpen}
+            onOpenChange={onFilterModalOpenChange}
+            filters={filters}
+            onFiltersChange={onFiltersChange}
+            onSortModeChange={onSortModeChange}
+            locationStatus={locationStatus}
+            favoritesCount={favoritesCount}
+            visitedCount={visitedCount}
+            activeFilterCount={activeFilterCount}
+          />
         </div>
       </div>
-      {sortStatusText && (
-        <p className="text-xs text-white/50">{sortStatusText}</p>
-      )}
       {selectedTags.length > 0 && (
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-xs text-white/40">Filtrando:</span>

@@ -31,7 +31,7 @@ export function PlaceCarousel({ slug, nome }: PlaceCarouselProps) {
       <button
         onClick={prev}
         aria-label="Anterior"
-        className="absolute left-2 top-1/2 -translate-y-1/2 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
+        className="absolute left-2 top-1/2 -translate-y-1/2 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-black/40 text-pure-white/90 hover:bg-brand-500/80 hover:text-pure-white transition-colors"
       >
         <ChevronLeft className="h-4 w-4" />
       </button>
@@ -39,7 +39,7 @@ export function PlaceCarousel({ slug, nome }: PlaceCarouselProps) {
       <button
         onClick={next}
         aria-label="Próximo"
-        className="absolute right-2 top-1/2 -translate-y-1/2 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
+        className="absolute right-2 top-1/2 -translate-y-1/2 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-black/40 text-pure-white/90 hover:bg-brand-500/80 hover:text-pure-white transition-colors"
       >
         <ChevronRight className="h-4 w-4" />
       </button>
@@ -51,14 +51,14 @@ export function PlaceCarousel({ slug, nome }: PlaceCarouselProps) {
             onClick={() => setSlide(i)}
             aria-label={`Foto ${i + 1}`}
             className={`h-1.5 rounded-full transition-all ${
-              slide === i ? 'w-4 bg-brand-400' : 'w-1.5 bg-white/40'
+              slide === i ? 'w-4 bg-brand-400' : 'w-1.5 bg-pure-white/40'
             }`}
           />
         ))}
       </div>
 
       <div className="absolute top-2 left-2 z-10">
-        <span className="rounded-full bg-black/50 px-2 py-0.5 text-xs text-white">
+        <span className="rounded-full bg-black/40 backdrop-blur-sm px-2.5 py-1 text-xs font-medium text-pure-white/90">
           {slide === 0 ? 'Logo' : `Foto ${slide}`}
         </span>
       </div>

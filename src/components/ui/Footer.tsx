@@ -8,9 +8,8 @@ export function Footer() {
     <footer className="border-t border-white/10 bg-dark-800 px-4 py-5 mt-6">
       <div className="mx-auto max-w-7xl flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/30">
         <p>
-          Feito por um usuário do{' '}
-          <span className="text-white/50">Passaporte Pinheiros</span>{' '}
-          para uso pessoal. Não é um aplicativo oficial.
+          Guia digital complementar ao <span className="text-white/50">Passaporte Pinheiros</span>.
+          Para validar benefícios, apresente o passaporte físico no estabelecimento.
         </p>
 
         {installed ? (

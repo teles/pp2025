@@ -2,7 +2,10 @@ import { useState, useEffect, useMemo } from 'react'
 import { usePlaces } from '@/hooks/usePlaces'
 import { usePlaceFilter } from '@/hooks/usePlaceFilter'
 import { useTheme } from '@/hooks/useTheme'
+import { useFavorites } from '@/hooks/useFavorites'
+import { useVisits } from '@/hooks/useVisits'
 import type { Place } from '@/types/place'
+import type { FilterModalFilters } from '@/components/ui/FilterModal'
 import { haversineKm } from '@/lib/geo'
 import { Header } from '@/components/places/Header'
 import { FilterBar } from '@/components/ui/FilterBar'
@@ -23,6 +26,15 @@ export default function App() {
   const { theme, toggle: toggleTheme } = useTheme()
   const [locationStatus, setLocationStatus] = useState<LocationStatus>('idle')
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null)
+  const { favorites, toggle: toggleFavorite, isFavorite, count: favoritesCount } = useFavorites()
+  const { visits, visitCount, addVisit, removeVisit } = useVisits()
+  const [filters, setFilters] = useState<FilterModalFilters>({
+    showFavorites: false,
+    showVisited: false,
+    showNotVisited: false,
+    sortMode: 'default',
+  })
+  const [filterModalOpen, setFilterModalOpen] = useState(false)
 
   // Restore selected place from URL once data is loaded
   useEffect(() => {
@@ -80,16 +92,25 @@ export default function App() {
   function handleSortModeChange(mode: SortMode) {
     if (mode === 'default') {
       setSortMode('default')
+      setFilters((f) => ({ ...f, sortMode: 'default' }))
       return
     }
 
     if (userLocation) {
       setSortMode('distance')
       setLocationStatus('ready')
+      setFilters((f) => ({ ...f, sortMode: 'distance' }))
       return
     }
 
     requestUserLocation()
+  }
+
+  function handleFiltersChange(next: FilterModalFilters) {
+    setFilters(next)
+    if (next.sortMode !== sortMode) {
+      handleSortModeChange(next.sortMode)
+    }
   }
 
   const distanceBySlug = useMemo(() => {
@@ -105,22 +126,39 @@ export default function App() {
     return distances
   }, [filteredPlaces, userLocation])
 
+  const visitedCount = useMemo(
+    () => places.filter((p) => visitCount(p.slug) > 0).length,
+    [places, visitCount],
+  )
+
   const orderedPlaces = useMemo(() => {
-    if (sortMode !== 'distance' || !userLocation) return filteredPlaces
+    let list = filteredPlaces
 
-    const list = [...filteredPlaces]
-    list.sort((a, b) => {
-      const da = distanceBySlug[a.slug]
-      const db = distanceBySlug[b.slug]
+    if (filters.showFavorites) {
+      list = list.filter((p) => favorites.has(p.slug))
+    }
+    if (filters.showVisited) {
+      list = list.filter((p) => visitCount(p.slug) > 0)
+    }
+    if (filters.showNotVisited) {
+      list = list.filter((p) => visitCount(p.slug) === 0)
+    }
 
-      if (da == null && db == null) return a.nome.localeCompare(b.nome)
-      if (da == null) return 1
-      if (db == null) return -1
-      return da - db
-    })
+    if (sortMode === 'distance' && userLocation) {
+      list = [...list]
+      list.sort((a, b) => {
+        const da = distanceBySlug[a.slug]
+        const db = distanceBySlug[b.slug]
+
+        if (da == null && db == null) return a.nome.localeCompare(b.nome)
+        if (da == null) return 1
+        if (db == null) return -1
+        return da - db
+      })
+    }
 
     return list
-  }, [filteredPlaces, sortMode, userLocation, distanceBySlug])
+  }, [filteredPlaces, sortMode, userLocation, distanceBySlug, filters, favorites, visitCount])
 
   if (loading)
     return (
@@ -157,9 +195,14 @@ export default function App() {
         selectedTags={selectedTags}
         onToggle={toggleTag}
         onClear={clearTags}
-        sortMode={sortMode}
+        filters={filters}
+        onFiltersChange={handleFiltersChange}
         onSortModeChange={handleSortModeChange}
         locationStatus={locationStatus}
+        favoritesCount={favoritesCount}
+        visitedCount={visitedCount}
+        filterModalOpen={filterModalOpen}
+        onFilterModalOpenChange={setFilterModalOpen}
       />
 
       <main className="mx-auto max-w-7xl px-4 py-6">
@@ -168,6 +211,9 @@ export default function App() {
           selectedPlace={selectedPlace}
           onSelect={handleSelect}
           distances={sortMode === 'distance' ? distanceBySlug : undefined}
+          isFavorite={isFavorite}
+          onToggleFavorite={toggleFavorite}
+          visitCount={visitCount}
         />
       </main>
 
@@ -175,7 +221,15 @@ export default function App() {
 
       <Footer />
 
-      <PlaceDetail place={selectedPlace} onClose={() => { setSelectedPlace(null); syncLugar(null) }} />
+      <PlaceDetail
+        place={selectedPlace}
+        onClose={() => { setSelectedPlace(null); syncLugar(null) }}
+        isFavorite={selectedPlace ? isFavorite(selectedPlace.slug) : false}
+        onToggleFavorite={toggleFavorite}
+        visits={visits}
+        onAddVisit={addVisit}
+        onRemoveVisit={removeVisit}
+      />
     </div>
   )
 }
