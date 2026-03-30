@@ -31,7 +31,7 @@ export default function App() {
   const [filters, setFilters] = useState<FilterModalFilters>({
     showFavorites: false,
     showVisited: false,
-    showNotVisited: false,
+    showRemaining: false,
     sortMode: 'default',
   })
   const [filterModalOpen, setFilterModalOpen] = useState(false)
@@ -140,8 +140,8 @@ export default function App() {
     if (filters.showVisited) {
       list = list.filter((p) => visitCount(p.slug) > 0)
     }
-    if (filters.showNotVisited) {
-      list = list.filter((p) => visitCount(p.slug) === 0)
+    if (filters.showRemaining) {
+      list = list.filter((p) => visitCount(p.slug) < 2)
     }
 
     if (sortMode === 'distance' && userLocation) {

@@ -59,7 +59,7 @@ export function FilterBar({
   const activeFilterCount =
     (filters.showFavorites ? 1 : 0) +
     (filters.showVisited ? 1 : 0) +
-    (filters.showNotVisited ? 1 : 0) +
+    (filters.showRemaining ? 1 : 0) +
     (filters.sortMode === 'distance' ? 1 : 0)
 
   return (

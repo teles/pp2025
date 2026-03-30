@@ -1,4 +1,4 @@
-import { Heart, Stamp, EyeOff, ArrowUpDown, SlidersHorizontal, X } from 'lucide-react'
+import { Heart, Stamp, TicketCheck, ArrowUpDown, SlidersHorizontal, X } from 'lucide-react'
 import * as Dialog from '@radix-ui/react-dialog'
 import { cn } from '@/lib/utils'
 
@@ -8,7 +8,7 @@ type LocationStatus = 'idle' | 'loading' | 'ready' | 'unsupported' | 'denied' | 
 export interface FilterModalFilters {
   showFavorites: boolean
   showVisited: boolean
-  showNotVisited: boolean
+  showRemaining: boolean
   sortMode: SortMode
 }
 
@@ -47,9 +47,9 @@ export function FilterModal({
 
   function toggle(key: keyof Omit<FilterModalFilters, 'sortMode'>) {
     const next = { ...filters, [key]: !filters[key] }
-    // "visited" and "not visited" are mutually exclusive
-    if (key === 'showVisited' && next.showVisited) next.showNotVisited = false
-    if (key === 'showNotVisited' && next.showNotVisited) next.showVisited = false
+    // "visited" and "remaining" are mutually exclusive
+    if (key === 'showVisited' && next.showVisited) next.showRemaining = false
+    if (key === 'showRemaining' && next.showRemaining) next.showVisited = false
     onFiltersChange(next)
   }
 
@@ -58,11 +58,11 @@ export function FilterModal({
   }
 
   function clearAll() {
-    onFiltersChange({ showFavorites: false, showVisited: false, showNotVisited: false, sortMode: 'default' })
+    onFiltersChange({ showFavorites: false, showVisited: false, showRemaining: false, sortMode: 'default' })
     if (filters.sortMode === 'distance') onSortModeChange('default')
   }
 
-  const hasActiveFilters = filters.showFavorites || filters.showVisited || filters.showNotVisited || filters.sortMode === 'distance'
+  const hasActiveFilters = filters.showFavorites || filters.showVisited || filters.showRemaining || filters.sortMode === 'distance'
 
   return (
     <>
@@ -125,10 +125,10 @@ export function FilterModal({
                     activeColor="brand"
                   />
                   <FilterToggle
-                    active={filters.showNotVisited}
-                    onClick={() => toggle('showNotVisited')}
-                    icon={<EyeOff className="h-4 w-4" />}
-                    label="Não visitados"
+                    active={filters.showRemaining}
+                    onClick={() => toggle('showRemaining')}
+                    icon={<TicketCheck className="h-4 w-4" />}
+                    label="Com visitas restantes"
                     activeColor="amber"
                   />
                 </div>
