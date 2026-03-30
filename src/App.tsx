@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { usePlaces } from '@/hooks/usePlaces'
 import { usePlaceFilter } from '@/hooks/usePlaceFilter'
+import { useTheme } from '@/hooks/useTheme'
 import type { Place } from '@/types/place'
 import { haversineKm } from '@/lib/geo'
 import { Header } from '@/components/places/Header'
@@ -8,6 +9,7 @@ import { FilterBar } from '@/components/ui/FilterBar'
 import { PlaceGrid } from '@/components/places/PlaceGrid'
 import { PlaceDetail } from '@/components/places/PlaceDetail'
 import { FooterMap } from '@/components/places/FooterMap'
+import { Footer } from '@/components/ui/Footer'
 
 type LocationStatus = 'idle' | 'loading' | 'ready' | 'unsupported' | 'denied' | 'error'
 type SortMode = 'default' | 'distance'
@@ -18,6 +20,7 @@ export default function App() {
     usePlaceFilter(places)
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null)
   const [sortMode, setSortMode] = useState<SortMode>('default')
+  const { theme, toggle: toggleTheme } = useTheme()
   const [locationStatus, setLocationStatus] = useState<LocationStatus>('idle')
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null)
 
@@ -146,6 +149,8 @@ export default function App() {
         }}
         count={orderedPlaces.length}
         total={places.length}
+        theme={theme}
+        onThemeToggle={toggleTheme}
       />
 
       <FilterBar
@@ -167,6 +172,8 @@ export default function App() {
       </main>
 
       <FooterMap places={orderedPlaces} onSelect={handleSelect} />
+
+      <Footer />
 
       <PlaceDetail place={selectedPlace} onClose={() => { setSelectedPlace(null); syncLugar(null) }} />
     </div>
