@@ -1,7 +1,7 @@
 import { cn } from '@/lib/utils'
 import type { Tag } from '@/types/place'
 import { CUISINE_TAGS, PROMO_TAGS, TAG_LABELS } from '@/lib/constants'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './Select'
+import { Select, SelectContent, SelectItem, SelectTrigger } from './Select'
 import { ArrowUpDown } from 'lucide-react'
 
 type SortMode = 'default' | 'distance'
@@ -98,6 +98,9 @@ export function FilterBar({
           </Select>
         </div>
       </div>
+      {sortStatusText && (
+        <p className="text-xs text-white/50">{sortStatusText}</p>
+      )}
       {selectedTags.length > 0 && (
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-xs text-white/40">Filtrando:</span>
