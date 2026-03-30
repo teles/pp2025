@@ -6,6 +6,7 @@ Este projeto é o front-end do **Passaporte Pinheiros**: um site para selecionar
 
 - Lista os lugares participantes em formato de cards.
 - Permite filtrar por tipo de culinária e tipo de benefício.
+- Permite ordenar os estabelecimentos por distancia em linha reta a partir da localizacao do usuario.
 - Exibe detalhes da experiência de cada estabelecimento.
 - Mostra galeria de imagens (logo + fotos).
 - Exibe localização no mapa e link para abrir no Google Maps.

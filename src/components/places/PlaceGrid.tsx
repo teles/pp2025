@@ -5,9 +5,10 @@ interface PlaceGridProps {
   places: Place[]
   selectedPlace: Place | null
   onSelect: (place: Place) => void
+  distances?: Record<string, number>
 }
 
-export function PlaceGrid({ places, selectedPlace, onSelect }: PlaceGridProps) {
+export function PlaceGrid({ places, selectedPlace, onSelect, distances }: PlaceGridProps) {
   if (places.length === 0) {
     return (
       <div className="col-span-full flex flex-col items-center justify-center py-20 text-center">
@@ -26,6 +27,7 @@ export function PlaceGrid({ places, selectedPlace, onSelect }: PlaceGridProps) {
           place={place}
           selected={selectedPlace?.slug === place.slug}
           onSelect={onSelect}
+          distanceKm={distances?.[place.slug]}
         />
       ))}
     </div>

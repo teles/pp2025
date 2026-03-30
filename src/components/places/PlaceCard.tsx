@@ -1,5 +1,6 @@
 import type { Place } from '@/types/place'
 import { TAG_LABELS } from '@/lib/constants'
+import { formatDistance } from '@/lib/geo'
 import { Badge } from '@/components/ui/Badge'
 import { cn, withBase } from '@/lib/utils'
 
@@ -7,9 +8,10 @@ interface PlaceCardProps {
   place: Place
   selected: boolean
   onSelect: (place: Place) => void
+  distanceKm?: number
 }
 
-export function PlaceCard({ place, selected, onSelect }: PlaceCardProps) {
+export function PlaceCard({ place, selected, onSelect, distanceKm }: PlaceCardProps) {
   return (
     <div
       role="button"
@@ -45,6 +47,9 @@ export function PlaceCard({ place, selected, onSelect }: PlaceCardProps) {
         <p className="text-xs text-white/40 truncate">
           {place.endereco !== 'Sem endereço definido' ? place.endereco : '📍 A confirmar'}
         </p>
+        {distanceKm != null && (
+          <p className="text-xs text-brand-300">~{formatDistance(distanceKm)} de voce</p>
+        )}
         <div className="mt-auto flex flex-wrap gap-1 pt-1">
           {place.cuisineTags.slice(0, 2).map((tag) => (
             <Badge key={tag} variant="cuisine">{TAG_LABELS[tag]}</Badge>
