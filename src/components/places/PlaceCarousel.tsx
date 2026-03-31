@@ -11,6 +11,8 @@ interface PlaceCarouselProps {
 
 export function PlaceCarousel({ slug, nome }: PlaceCarouselProps) {
   const [slide, setSlide] = useState(0)
+  // Track which images have finished loading to show skeleton until ready
+  const [loaded, setLoaded] = useState<Record<string, boolean>>({})
 
   const prev = () => setSlide((s) => (s - 1 + SLIDES.length) % SLIDES.length)
   const next = () => setSlide((s) => (s + 1) % SLIDES.length)
@@ -18,14 +20,19 @@ export function PlaceCarousel({ slug, nome }: PlaceCarouselProps) {
   return (
     <div className="relative overflow-hidden bg-dark-900" style={{ aspectRatio: '16/9' }}>
       {SLIDES.map((img, i) => (
-        <img
-          key={img}
-          src={withBase(`images/${slug}/${img}.jpg`)}
-          alt={`${nome} – ${img}`}
-          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-300 ${
-            slide === i ? 'opacity-100' : 'opacity-0'
-          }`}
-        />
+        <div key={img} className={`absolute inset-0 transition-opacity duration-300 ${slide === i ? 'opacity-100' : 'opacity-0'}`}>
+          {/* Skeleton shown until image loads */}
+          {!loaded[img] && (
+            <div className="absolute inset-0 bg-dark-700 animate-pulse" />
+          )}
+          <img
+            src={withBase(`images/${slug}/${img}.jpg`)}
+            alt={`${nome} – ${img}`}
+            loading="lazy"
+            onLoad={() => setLoaded((prev) => ({ ...prev, [img]: true }))}
+            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-300 ${loaded[img] ? 'opacity-100' : 'opacity-0'}`}
+          />
+        </div>
       ))}
 
       <button

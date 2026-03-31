@@ -160,16 +160,6 @@ export default function App() {
     return list
   }, [filteredPlaces, sortMode, userLocation, distanceBySlug, filters, favorites, visitCount])
 
-  if (loading)
-    return (
-      <div className="flex h-screen items-center justify-center">
-        <div className="flex flex-col items-center gap-3">
-          <div className="h-10 w-10 rounded-full border-2 border-brand-400/30 border-t-brand-400 animate-spin" />
-          <p className="text-sm text-white/50">Carregando estabelecimentos…</p>
-        </div>
-      </div>
-    )
-
   if (error)
     return (
       <div className="flex h-screen items-center justify-center">
@@ -213,6 +203,7 @@ export default function App() {
           distances={sortMode === 'distance' ? distanceBySlug : undefined}
           isFavorite={isFavorite}
           onToggleFavorite={toggleFavorite}
+          loading={loading}
           visitCount={visitCount}
         />
       </main>

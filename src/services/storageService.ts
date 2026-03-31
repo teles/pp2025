@@ -3,6 +3,7 @@ export interface Visit {
   date: string      // ISO date string YYYY-MM-DD
   comment: string   // optional, may be empty
   visitNumber: 1 | 2
+  rating?: number   // 1–5 stars, optional
 }
 
 const FAVORITES_KEY = 'pp:favorites'

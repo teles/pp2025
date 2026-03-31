@@ -54,7 +54,7 @@ export function PlaceCard({ place, selected, onSelect, distanceKm, isFavorite, o
             <button
               onClick={(e) => { e.stopPropagation(); onToggleFavorite(place.slug) }}
               aria-label={isFavorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
-              className="flex h-7 w-7 items-center justify-center rounded-full bg-black/60 backdrop-blur-sm transition-colors hover:bg-black/80"
+              className="cursor-pointer flex h-7 w-7 items-center justify-center rounded-full bg-black/60 backdrop-blur-sm transition-colors hover:bg-black/80"
             >
               <Heart
                 className={cn(

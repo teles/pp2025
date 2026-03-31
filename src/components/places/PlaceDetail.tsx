@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { X, MapPin, ExternalLink, Heart, Stamp, Plus, Trash2, MessageSquare } from 'lucide-react'
+import { X, MapPin, ExternalLink, Heart, Stamp, Plus, Trash2, MessageSquare, Star } from 'lucide-react'
 import * as Dialog from '@radix-ui/react-dialog'
 import type { Place } from '@/types/place'
 import type { Visit } from '@/services/storageService'
@@ -17,7 +17,7 @@ interface PlaceDetailProps {
   isFavorite?: boolean
   onToggleFavorite?: (slug: string) => void
   visits?: Visit[]
-  onAddVisit?: (slug: string, date: string, comment: string) => void
+  onAddVisit?: (slug: string, date: string, comment: string, rating?: number) => void
   onRemoveVisit?: (slug: string, visitNumber: 1 | 2) => void
 }
 
@@ -76,7 +76,7 @@ export function PlaceDetail({ place, onClose, isFavorite, onToggleFavorite, visi
                         onClick={() => onToggleFavorite(place.slug)}
                         aria-label={isFavorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
                         className={cn(
-                          'flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-colors',
+                          'flex cursor-pointer h-10 w-10 shrink-0 items-center justify-center rounded-full transition-colors',
                           isFavorite
                             ? 'bg-red-500/15 hover:bg-red-500/25'
                             : 'bg-white/10 hover:bg-white/20',
@@ -156,6 +156,21 @@ export function PlaceDetail({ place, onClose, isFavorite, onToggleFavorite, visi
                                   year: 'numeric',
                                 })}
                               </p>
+                              {visit.rating && (
+                                <div className="mt-1 flex items-center gap-0.5">
+                                  {[1, 2, 3, 4, 5].map((s) => (
+                                    <Star
+                                      key={s}
+                                      className={cn(
+                                        'h-3 w-3',
+                                        s <= visit.rating!
+                                          ? 'fill-amber-400 text-amber-400'
+                                          : 'text-white/15',
+                                      )}
+                                    />
+                                  ))}
+                                </div>
+                              )}
                               {visit.comment && (
                                 <p className="mt-1 text-xs text-white/40 flex items-start gap-1">
                                   <MessageSquare className="h-3 w-3 mt-0.5 shrink-0" />
@@ -229,7 +244,7 @@ export function PlaceDetail({ place, onClose, isFavorite, onToggleFavorite, visi
           onOpenChange={setAddVisitOpen}
           placeName={place.nome}
           visitNumber={(placeVisits.length + 1) as 1 | 2}
-          onConfirm={(date, comment) => onAddVisit(place.slug, date, comment)}
+          onConfirm={(date, comment, rating) => onAddVisit(place.slug, date, comment, rating)}
         />
       )}
     </Dialog.Root>

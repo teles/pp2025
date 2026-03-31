@@ -14,12 +14,12 @@ export function useVisits() {
     [visits],
   )
 
-  const addVisit = useCallback((slug: string, date: string, comment: string) => {
+  const addVisit = useCallback((slug: string, date: string, comment: string, rating?: number) => {
     setVisits((prev) => {
       const existing = prev.filter((v) => v.slug === slug)
       if (existing.length >= 2) return prev // max 2
       const visitNumber = (existing.length + 1) as 1 | 2
-      const next = [...prev, { slug, date, comment, visitNumber }]
+      const next = [...prev, { slug, date, comment, visitNumber, rating }]
       saveVisits(next)
       return next
     })

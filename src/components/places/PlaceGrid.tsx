@@ -1,5 +1,6 @@
 import type { Place } from '@/types/place'
 import { PlaceCard } from './PlaceCard'
+import { PlaceCardSkeleton } from './PlaceCardSkeleton'
 
 interface PlaceGridProps {
   places: Place[]
@@ -9,9 +10,20 @@ interface PlaceGridProps {
   isFavorite?: (slug: string) => boolean
   onToggleFavorite?: (slug: string) => void
   visitCount?: (slug: string) => number
+  loading?: boolean
 }
 
-export function PlaceGrid({ places, selectedPlace, onSelect, distances, isFavorite, onToggleFavorite, visitCount }: PlaceGridProps) {
+export function PlaceGrid({ places, selectedPlace, onSelect, distances, isFavorite, onToggleFavorite, visitCount, loading }: PlaceGridProps) {
+  if (loading) {
+    return (
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-4">
+        {Array.from({ length: 10 }).map((_, i) => (
+          <PlaceCardSkeleton key={i} />
+        ))}
+      </div>
+    )
+  }
+
   if (places.length === 0) {
     return (
       <div className="col-span-full flex flex-col items-center justify-center py-20 text-center">

@@ -1,25 +1,29 @@
 import { useState } from 'react'
 import * as Dialog from '@radix-ui/react-dialog'
-import { X, CalendarDays, Plus } from 'lucide-react'
+import { X, CalendarDays, Plus, Star } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
+import { cn } from '@/lib/utils'
 
 interface AddVisitDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   placeName: string
   visitNumber: 1 | 2
-  onConfirm: (date: string, comment: string) => void
+  onConfirm: (date: string, comment: string, rating?: number) => void
 }
 
 export function AddVisitDialog({ open, onOpenChange, placeName, visitNumber, onConfirm }: AddVisitDialogProps) {
   const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10))
   const [comment, setComment] = useState('')
+  const [rating, setRating] = useState<number | undefined>(undefined)
+  const [hovered, setHovered] = useState<number | undefined>(undefined)
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!date) return
-    onConfirm(date, comment.trim())
+    onConfirm(date, comment.trim(), rating)
     setComment('')
+    setRating(undefined)
     setDate(new Date().toISOString().slice(0, 10))
     onOpenChange(false)
   }
@@ -63,6 +67,39 @@ export function AddVisitDialog({ open, onOpenChange, placeName, visitNumber, onC
                   required
                   className="w-full bg-dark-900 border border-white/10 rounded-xl pl-9 pr-4 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-brand-500 transition-colors scheme-dark"
                 />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-medium text-white/50 mb-2">
+                Avaliação <span className="text-white/30">(opcional)</span>
+              </label>
+              <div className="flex items-center gap-1">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <button
+                    key={star}
+                    type="button"
+                    onClick={() => setRating(rating === star ? undefined : star)}
+                    onMouseEnter={() => setHovered(star)}
+                    onMouseLeave={() => setHovered(undefined)}
+                    aria-label={`${star} estrela${star > 1 ? 's' : ''}`}
+                    className="p-0.5 transition-transform hover:scale-110"
+                  >
+                    <Star
+                      className={cn(
+                        'h-6 w-6 transition-colors',
+                        (hovered ?? rating ?? 0) >= star
+                          ? 'fill-amber-400 text-amber-400'
+                          : 'text-white/20',
+                      )}
+                    />
+                  </button>
+                ))}
+                {rating && (
+                  <span className="ml-1 text-xs text-white/40">
+                    {['', 'Ruim', 'Regular', 'Bom', 'Ótimo', 'Excelente'][rating]}
+                  </span>
+                )}
               </div>
             </div>
 
