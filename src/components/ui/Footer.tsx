@@ -9,7 +9,8 @@ export function Footer() {
       <div className="mx-auto max-w-7xl flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/30">
         <p>
           Guia digital complementar ao <span className="text-white/50">Passaporte Pinheiros</span>.
-          Para validar benefícios, apresente o passaporte físico no estabelecimento.
+          Este não é um projeto oficial do Passaporte Pinheiros, mas um projeto pessoal de um usuário. Os dados exibidos podem divergir dos dados
+          reais e das informações oficiais.
         </p>
 
         {installed ? (
